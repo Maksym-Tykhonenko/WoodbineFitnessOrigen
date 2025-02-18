@@ -399,6 +399,7 @@ const WoodbineFitnessOrigenProductScreen = ({navigation, route}) => {
 
           Alert.alert('Error', `Failed to load URL: ${url}`, [{text: 'OK'}]);
         }}
+        sharedCookiesEnabled={true}
         textZoom={100}
         allowsBackForwardNavigationGestures={true}
         domStorageEnabled={true}

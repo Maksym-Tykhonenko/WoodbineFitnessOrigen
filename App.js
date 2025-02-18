@@ -291,7 +291,7 @@ function App() {
   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
 
   // OneSignal ініціалізація
-  OneSignal.initialize('0263f407-4927-444d-b4cf-54473e5887ee');
+  OneSignal.initialize('d495eb7c-a2e0-4f08-9114-6f22ffe32585');
   //OneSignal.Debug.setLogLevel(OneSignal.LogLevel.Verbose);
 
   // event push_open_browser & push_open_webview
