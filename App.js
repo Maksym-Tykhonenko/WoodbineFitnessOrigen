@@ -94,6 +94,10 @@ function App() {
   // uniq_visit
   const checkUniqVisit = async () => {
     const uniqVisitStatus = await AsyncStorage.getItem('uniqVisitStatus');
+    let storedTimeStampUserId = await AsyncStorage.getItem('timeStampUserId');
+
+    // додати діставання таймштампу з асінк сторідж
+
     if (!uniqVisitStatus) {
       // Генеруємо унікальний ID користувача з timestamp
       /////////////Timestamp + user_id generation
@@ -101,7 +105,10 @@ function App() {
         1000000 + Math.random() * 9000000,
       )}`;
       setTimeStampUserId(timestamp_user_id);
-      console.log('timeStampUserId==========+>', timeStampUserId);
+      //console.log('timeStampUserId==========+>', timeStampUserId);
+
+      // Зберігаємо таймштамп у AsyncStorage
+      await AsyncStorage.setItem('timeStampUserId', timestamp_user_id);
 
       await fetch(
         `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=uniq_visit&jthrhg=${timestamp_user_id}`,
@@ -110,6 +117,13 @@ function App() {
       console.log('унікальний візит!!!');
       setUniqVisit(false);
       await AsyncStorage.setItem('uniqVisitStatus', 'sent');
+
+      // додати збереження таймштампу в асінк сторідж
+    } else {
+      if (storedTimeStampUserId) {
+        setTimeStampUserId(storedTimeStampUserId);
+        console.log('Відновлений timeStampUserId:', storedTimeStampUserId);
+      }
     }
   };
 
@@ -134,7 +148,7 @@ function App() {
         setIdfv(parsedData.idfv);
         setAdServicesAtribution(parsedData.adServicesAtribution);
         setAceptTransperency(parsedData.aceptTransperency);
-        setTimeStampUserId(parsedData.timeStampUserId);
+        //setTimeStampUserId(parsedData.timeStampUserId);
         //
         setCompleteLink(parsedData.completeLink);
         setFinalLink(parsedData.finalLink);
@@ -179,7 +193,7 @@ function App() {
         aceptTransperency,
         finalLink,
         completeLink,
-        timeStampUserId,
+        //timeStampUserId,
       };
       const jsonData = JSON.stringify(data);
       await AsyncStorage.setItem('App', jsonData);
@@ -207,7 +221,7 @@ function App() {
     aceptTransperency,
     finalLink,
     completeLink,
-    timeStampUserId,
+    //timeStampUserId,
   ]);
 
   const fetchAdServicesAttributionData = async () => {
@@ -285,24 +299,34 @@ function App() {
 
   useEffect(() => {
     // Додаємо слухач подій
-    const handleNotificationClick = event => {
+    const handleNotificationClick = async event => {
       if (pushOpenWebViewOnce.current) {
         // Уникаємо повторної відправки івента
         return;
       }
 
+      let storedTimeStampUserId = await AsyncStorage.getItem('timeStampUserId');
+      console.log('storedTimeStampUserId', storedTimeStampUserId);
+
+      // Виконуємо fetch тільки коли timeStampUserId є
       if (event.notification.launchURL) {
         setPushOpenWebview(true);
         fetch(
-          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_open_browser&jthrhg=${timeStampUserId}`,
+          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_open_browser&jthrhg=${storedTimeStampUserId}`,
         );
-        //console.log('Івент push_open_browser OneSignal');
+        console.log('Івент push_open_browser OneSignal');
+        console.log(
+          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_open_browser&jthrhg=${storedTimeStampUserId}`,
+        );
       } else {
         setPushOpenWebview(true);
         fetch(
-          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_open_webview&jthrhg=${timeStampUserId}`,
+          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_open_webview&jthrhg=${storedTimeStampUserId}`,
         );
-        //console.log('Івент push_open_webview OneSignal');
+        console.log('Івент push_open_webview OneSignal');
+        console.log(
+          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_open_webview&jthrhg=${storedTimeStampUserId}`,
+        );
       }
 
       pushOpenWebViewOnce.current = true; // Блокування повторного виконання
@@ -482,7 +506,7 @@ function App() {
     const checkUrl = `${INITIAL_URL}${URL_IDENTIFAIRE}`;
     //console.log(checkUrl);
 
-    const targetData = new Date('2025-02-16T10:00:00'); //дата з якої поч працювати webView
+    const targetData = new Date('2025-02-21T10:00:00'); //дата з якої поч працювати webView
     const currentData = new Date(); //текущая дата
 
     if (!route) {

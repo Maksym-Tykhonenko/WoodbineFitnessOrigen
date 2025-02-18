@@ -15,52 +15,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WoodbineFitnessOrigenProductScreen = ({navigation, route}) => {
   const [product, setProduct] = useState(route.params?.product);
+  const [timeStampUserId, setTimeStampUserId] = useState(
+    route.params?.timeStampUserId,
+  );
   ///////////
-  {
-    /**
-  useEffect(() => {
-    getData();
-  }, []);
 
-  useEffect(() => {
-    setData();
-  }, [product]);
-
-  const setData = async () => {
-    try {
-      const data = {
-        product,
-      };
-      const jsonData = JSON.stringify(data);
-      await AsyncStorage.setItem('ProdScr', jsonData);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const jsonData = await AsyncStorage.getItem('ProdScr');
-      if (jsonData !== null) {
-        const parsedData = JSON.parse(jsonData);
-        setProduct(parsedData.product);
-      } else {
-        console.log('Даних немає в AsyncStorage');
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
- */
-  }
   const INITIAL_URL = `https://wonderful-glorious-celebration.space/`;
   const URL_IDENTIFAIRE = `K8WZLhG7`;
-
-  /////////////Timestamp + user_id generation
-  const timestamp_user_id = `${new Date().getTime()}-${Math.floor(
-    1000000 + Math.random() * 9000000,
-  )}`;
-  //console.log('idForTag', timestamp_user_id);
 
   const refWebview = useRef(null);
 
@@ -106,7 +67,7 @@ const WoodbineFitnessOrigenProductScreen = ({navigation, route}) => {
       // Відправляємо івент лише, якщо його ще не відправляли
       if (!pushSubscribeStatus && route.params?.responseToPushPermition) {
         fetch(
-          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_subscribe&jthrhg=${timestamp_user_id}`,
+          `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=push_subscribe&jthrhg=${timeStampUserId}`,
         );
         console.log('івент push_subscribe !!!');
         await AsyncStorage.setItem('pushSubscribeStatus', 'sent');
@@ -125,7 +86,7 @@ const WoodbineFitnessOrigenProductScreen = ({navigation, route}) => {
     if (!hasWebViewOpenEventSent.current) {
       hasWebViewOpenEventSent.current = true; // Встановлюємо, що івент вже відправлений
       fetch(
-        `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=webview_open&jthrhg=${timestamp_user_id}`,
+        `${INITIAL_URL}${URL_IDENTIFAIRE}?utretg=webview_open&jthrhg=${timeStampUserId}`,
       );
       //console.log('Івент webview_open відправлено!');
     }
